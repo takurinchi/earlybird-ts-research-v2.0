@@ -1,0 +1,50 @@
+{
+  "study": "Early-Bird Ver.2.0 train-time model compaction",
+  "run_id": "20261120T153121276160",
+  "baseline_experiment_id": "20261120T153121276160_baseline_seed1",
+  "tm": 7,
+  "strategies": [
+    "dense_late_compaction",
+    "train_time_compaction"
+  ],
+  "information_modes": [
+    "online",
+    "posthoc"
+  ],
+  "conditions": {
+    "C1_tm_-10": 1,
+    "C2_tm_-5": 2,
+    "C3_tm_+0": 7,
+    "C4_tm_+5": 12,
+    "C5_tm_+10": 17
+  },
+  "run_ids": [
+    "20261120T153121276160_C1_tm_-10_online_dense_late_compaction_seed1",
+    "20261120T153121276160_C1_tm_-10_online_train_time_compaction_seed1",
+    "20261120T153121276160_C2_tm_-5_online_dense_late_compaction_seed1",
+    "20261120T153121276160_C2_tm_-5_online_train_time_compaction_seed1",
+    "20261120T153121276160_C3_tm_+0_online_dense_late_compaction_seed1",
+    "20261120T153121276160_C3_tm_+0_online_train_time_compaction_seed1",
+    "20261120T153121276160_C4_tm_+5_online_dense_late_compaction_seed1",
+    "20261120T153121276160_C4_tm_+5_online_train_time_compaction_seed1",
+    "20261120T153121276160_C5_tm_+10_online_dense_late_compaction_seed1",
+    "20261120T153121276160_C5_tm_+10_online_train_time_compaction_seed1",
+    "20261120T153121276160_C1_tm_-10_posthoc_dense_late_compaction_seed1",
+    "20261120T153121276160_C1_tm_-10_posthoc_train_time_compaction_seed1",
+    "20261120T153121276160_C2_tm_-5_posthoc_dense_late_compaction_seed1",
+    "20261120T153121276160_C2_tm_-5_posthoc_train_time_compaction_seed1",
+    "20261120T153121276160_C3_tm_+0_posthoc_dense_late_compaction_seed1",
+    "20261120T153121276160_C3_tm_+0_posthoc_train_time_compaction_seed1",
+    "20261120T153121276160_C4_tm_+5_posthoc_dense_late_compaction_seed1",
+    "20261120T153121276160_C4_tm_+5_posthoc_train_time_compaction_seed1",
+    "20261120T153121276160_C5_tm_+10_posthoc_dense_late_compaction_seed1",
+    "20261120T153121276160_C5_tm_+10_posthoc_train_time_compaction_seed1"
+  ],
+  "failed_or_incomplete_runs": [],
+  "checkpoint_policy": {
+    "initial": true,
+    "final": true,
+    "transition": false
+  },
+  "large_checkpoints_copied": false
+}

@@ -21,9 +21,9 @@ def build_plan(config_path):
         "pruning.selected_ratio",
         "earlybird.epsilon",
         "earlybird.mask_window",
-        "ts.relative_to_tm.before_offset",
-        "ts.relative_to_tm.after_offset",
-        "ts.fixed_epoch",
+        "ts.offsets",
+
+
     ]
 
     mode = cfg["experiment"].get("mode", "ts_comparison")
@@ -70,16 +70,9 @@ def build_plan(config_path):
     }
 
     if mode == "train_time_compaction":
-        relative = cfg["ts"]["relative_to_tm"]
-
-        plan["strategies"] = cfg["comparison"]["strategies"]
-
-        plan["conditions"] = {
-            "C1": f"t_m - {relative['before_offset']}",
-            "C2": f"t_m + {relative['near_offset']}",
-            "C3": f"t_m + {relative['after_offset']}",
-            "C4": cfg["ts"]["fixed_epoch"],
-        }
+        plan['strategies'] = cfg['comparison']['strategies']
+        plan['offsets'] = cfg['ts']['offsets']
+        plan['boundary_policy'] = cfg['ts']['boundary_policy']
 
         plan["optimizer_state_policy"] = cfg[
             "compaction"
@@ -107,7 +100,7 @@ def main():
 
     parser.add_argument(
         "--config",
-        default="configs/ts_sweep.yaml",
+        default="configs/ts_compaction.yaml",
     )
     parser.add_argument(
         "--execute",

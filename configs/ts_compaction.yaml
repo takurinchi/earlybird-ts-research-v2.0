@@ -1,0 +1,39 @@
+experiment:
+  mode: train_time_compaction
+  config: earlybird.yaml
+  output_root: outputs
+comparison:
+  strategies:
+    - dense_late_compaction
+    - train_time_compaction
+  information_modes:
+    - online
+    - posthoc
+ts:
+  offsets: [-10, -5, 0, 5, 10]
+  boundary_policy: clamp_to_1_through_epochs_minus_1
+compaction:
+  optimizer_state: migrate_adadelta_state
+  scheduler: preserve_global_epoch
+reproducibility:
+  deterministic: true
+runtime:
+  require_cuda: true
+measurement:
+  validation_frequency_epochs: 1
+  epoch_log_frequency_epochs: 1
+  test_evaluation: once_after_training
+  evaluation:
+    labels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    input_shape: [1, 1, 32, 32]
+    inference_batch_size: 1
+    warmup: 10
+    repeats: 100
+    checkpoint_format: torch_state_dict
+  checkpoint_policy:
+    initial: true
+    final: true
+    transition: false
+
+data:
+  root: .cache/mnist

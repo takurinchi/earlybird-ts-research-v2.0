@@ -1,0 +1,38 @@
+{
+  "status": "implementation_present_validation_pending",
+  "mode": "train_time_compaction",
+  "dataset": "MNIST",
+  "model": "MNIST LeNet-BN",
+  "epochs": 30,
+  "seed": 1,
+  "ratio": 0.5,
+  "detection": {
+    "epsilon": 0.1,
+    "mask_window": 5
+  },
+  "ts": "detected from Early-Bird search run",
+  "information_modes": [
+    "online",
+    "posthoc"
+  ],
+  "strategies": [
+    "dense_late_compaction",
+    "train_time_compaction"
+  ],
+  "offsets": [
+    -10,
+    -5,
+    0,
+    5,
+    10
+  ],
+  "boundary_policy": "clamp_to_1_through_epochs_minus_1",
+  "optimizer_state_policy": "migrate_adadelta_state",
+  "scheduler_policy": "preserve_global_epoch",
+  "validation_frequency_epochs": 1,
+  "checkpoint_policy": {
+    "initial": true,
+    "final": true,
+    "transition": false
+  }
+}

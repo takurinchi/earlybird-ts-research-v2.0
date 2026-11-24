@@ -3,7 +3,7 @@ project:
   seed: 1
   device: auto
 experiment:
-  epochs: 14
+  epochs: 30
   model:
     factory:  models.mnist_lenet:create_lenet_bn
     kwargs: {num_classes: 10}
@@ -12,13 +12,15 @@ experiment:
   architecture_candidate: [LeNet, VGG16, PreResNet101]
 data:
   loader_factory: data.mnist:create_loaders
-  kwargs: 64
+  kwargs: {batch_size: 64}
 training:
-  optimizer:  SGD
+  optimizer: Adadelta
   learning_rate: 1.0
-  momentum: 0.9
+  rho: 0.9
+  eps: 0.000001
   weight_decay: 0.0001
   lr_schedule:
+    enabled: false
     milestones: [80,120]
     gamma:  0.1
 pruning:

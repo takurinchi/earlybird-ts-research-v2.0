@@ -1,8 +1,13 @@
+"""Persistent BN-output channel gates used while a structural adapter is absent.
+
+Gates model activations, not graph structure; FLOPs and latency must not be
+reported as reduced until a structural-pruning backend compacts the model.
+"""
 import torch
 
 
 class BNChannelMaskManager:
-    def _init_(self, model, masks):
+    def __init__(self, model, masks):
         modules = dict(model.named_modules())
         missing = set(masks) - set(modules)
         if missing:
@@ -19,9 +24,9 @@ class BNChannelMaskManager:
             self.masks[name] = mask
             self.handles.append(module.register_forward_hook(self._hook(mask)))
 
-    @staticmethod    
+    @staticmethod
     def _hook(mask):
-        def apply(_module, _input, output):
+        def apply(_module, _inputs, output):
             shape = [1] * output.ndim
             shape[1] = mask.numel()
             return output * mask.to(device=output.device, dtype=output.dtype).view(shape)

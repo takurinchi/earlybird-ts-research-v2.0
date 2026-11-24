@@ -1,3 +1,4 @@
+"""Generic classification epoch routines; adapt loss/batch unpacking as needed."""
 import torch
 
 
@@ -13,7 +14,7 @@ def train_epoch(model, loader, optimizer, criterion, device, mask_manager=None):
         optimizer.zero_grad(set_to_none=True)
         logits = model(x)
         loss = criterion(logits, y)
-        loss.backward(); optmizer.step()
+        loss.backward(); optimizer.step()
         if mask_manager:
             mask_manager.apply()
         total_loss += loss.item() * y.size(0)
@@ -21,7 +22,8 @@ def train_epoch(model, loader, optimizer, criterion, device, mask_manager=None):
         correct += (logits.detach().argmax(1) == y).sum().item()
     if not seen:
         raise ValueError("Training loader produced no samples")
-    return{"train_loss": total_loss / seen, "train_accuracy": correct / seen}
+    return {"train_loss": total_loss / seen, "train_accuracy": correct / seen}
+
 
 @torch.inference_mode()
 def evaluate_loss(model, loader, criterion, device):

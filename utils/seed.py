@@ -1,3 +1,4 @@
+"""Seed Python and available numerical backends."""
 import random
 import numpy as np
 
@@ -13,7 +14,7 @@ def set_seed(seed, deterministic=False):
         if deterministic:
             torch.use_deterministic_algorithms(True, warn_only=True)
             if hasattr(torch.backends, "cudnn"):
-                torch.backends.cdunn.benchmark = False
+                torch.backends.cudnn.benchmark = False
                 torch.backends.cudnn.deterministic = True
     except ImportError:
         pass

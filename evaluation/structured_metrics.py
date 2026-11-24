@@ -29,7 +29,7 @@ def _pool_output(height, width, layer):
     )
 
 
-def estimate_vgg16_compact_flops(model, masks, input_shape=(1, 3, 32, 32)):
+def estimate_lenet_compact_flops(model, masks, input_shape=(1, 1, 32, 32)):
     """Estimate Conv2d/Linear FLOPs for the physically compact VGG shape.
 
     The counting convention matches ``count_dense_flops``: multiply and add
@@ -58,15 +58,16 @@ def estimate_vgg16_compact_flops(model, masks, input_shape=(1, 3, 32, 32)):
         elif isinstance(layer, nn.MaxPool2d):
             height, width = _pool_output(height, width, layer)
 
-    height, width = _pool_output(height, width, model.avgpool)
-    total += 2 * batch * current_channels * height * width * model.classifier.out_features
+    # LeNet has no final average pooling.
+    total += 2 * batch * current_channels * height * width * model.classifier[0].out_features
+    total += sum(2 * batch * layer.in_features * layer.out_features for layer in list(model.classifier)[1:] if isinstance(layer, nn.Linear))
     return int(total)
 
 
-def estimate_vgg16_compact_parameters(model, masks):
+def estimate_lenet_compact_parameters(model, masks):
     """Estimate trainable parameter count after applying the channel masks."""
     total = 0
-    input_channels = 3
+    input_channels = 1
     for index, layer in enumerate(model.features):
         if isinstance(layer, nn.Conv2d):
             bn_name = f"features.{index + 1}"
@@ -83,7 +84,6 @@ def estimate_vgg16_compact_parameters(model, masks):
             if batch_norm.affine:
                 total += 2 * output_channels
             input_channels = output_channels
-    total += input_channels * model.classifier.out_features
-    if model.classifier.bias is not None:
-        total += model.classifier.out_features
+    total += input_channels * 25 * model.classifier[0].out_features + model.classifier[0].out_features
+    total += sum(p.numel() for layer in list(model.classifier)[1:] for p in layer.parameters())
     return int(total)

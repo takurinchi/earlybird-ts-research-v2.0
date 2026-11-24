@@ -7,15 +7,15 @@ LeNet_CFG = [6, "M", 16, "M",]
 
 
 class MNISTLeNetBN(nn.Module):
-    def _init_(self, num_classes=10):
-        super()._init_()
+    def __init__(self, num_classes=10):
+        super().__init__()
         layers, in_channels = [], 1
         for channels in LeNet_CFG:
             if channels == "M":
                 layers.append(nn.MaxPool2d(kernel_size=2, stride=2))
             else:
                 layers.extend([nn.Conv2d(in_channels, channels, 5, padding=0, bias=False),
-                               nn.BatchNoam2d(channels), nn.ReLU(inplace=True)])
+                               nn.BatchNorm2d(channels), nn.ReLU(inplace=True)])
                 in_channels = channels
         self.features = nn.Sequential(*layers)
         self.classifier = nn.Sequential(
@@ -28,7 +28,7 @@ class MNISTLeNetBN(nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
-        for module in self.module():
+        for module in self.modules():
             if isinstance(module, nn.Conv2d):
                 nn.init.normal_(module.weight, 0, (2.0 / (module.kernel_size[0] ** 2 * module.out_channels)) ** 0.5)
             elif isinstance(module, nn.BatchNorm2d):
@@ -39,9 +39,9 @@ class MNISTLeNetBN(nn.Module):
                 nn.init.zeros_(module.bias)
 
 
-    def foward(self, x):
+    def forward(self, x):
         x = self.features(x)
-        x = self.flatten(1)
+        x = x.flatten(1)
         return self.classifier(x)
 
 
@@ -49,7 +49,7 @@ def create_lenet_bn(num_classes=10):
     return MNISTLeNetBN(num_classes=num_classes)
 
 
-def structrally_prune_lenet(model, masks, return_parameter_slices=False):
+def structurally_prune_lenet(model, masks, return_parameter_slices=False):
     layers = []
     parameter_slices = {}
     channel_indices = {}
@@ -73,7 +73,7 @@ def structrally_prune_lenet(model, masks, return_parameter_slices=False):
                 parameter_slices[f"{conv_name}.bias"] = ((0, output_idx),)
             if features[module_index + 1].affine:
                 parameter_slices[f"{bn_name}.weight"] = ((0, output_idx),)
-                parameter_slices[f"{conv_name}.bias"] = ((0, output_idx),)
+                parameter_slices[f"{bn_name}.bias"] = ((0, output_idx),)
             conv = nn.Conv2d(in_idx.numel(), output_idx.numel(), layer.kernel_size, layer.stride, layer.padding, layer.dilation, layer.groups, bias=layer.bias is not None, padding_mode=layer.padding_mode).to(layer.weight.device, layer.weight.dtype)
             with torch.no_grad():
                 conv.weight.copy_(layer.weight.index_select(0, output_idx).index_select(1, in_idx))
@@ -86,7 +86,7 @@ def structrally_prune_lenet(model, masks, return_parameter_slices=False):
                 if old_bn.affine:
                     bn.weight.copy_(old_bn.weight.index_select(0, output_idx))
                     bn.bias.copy_(old_bn.bias.index_select(0, output_idx))
-                if old_bn.track_running_states:
+                if old_bn.track_running_stats:
                     bn.running_mean.copy_(old_bn.running_mean.index_select(0, output_idx))
                     bn.running_var.copy_(old_bn.running_var.index_select(0, output_idx))
                     bn.num_batches_tracked.copy_(old_bn.num_batches_tracked)
@@ -96,20 +96,23 @@ def structrally_prune_lenet(model, masks, return_parameter_slices=False):
         else:
             layers.append(copy.deepcopy(layer))
             module_index += 1
-    compact = MNISTLeNetBN._new_(MNISTLeNetBN)
-    nn.Module._init_(compact)
+    compact = MNISTLeNetBN.__new__(MNISTLeNetBN)
+    nn.Module.__init__(compact)
     compact.features = nn.Sequential(*layers)
-    last_idx = input_idx.to(model.classifier.weight.device)
-    channel_indices["classifier.input"] = last_idx.detach().cpu()
-    parameter_slices["classifier.weight"] = ((1, last_idx),)
-    if model.classifier.bias is not None:
-        parameter_slices["classifier.bias"] = ()
-    linear = nn.Linear(last_idx.numel(), model.classifier.out_features, bias=model.classifier.bias is not None).to(model.classifier.weight.device, model.classifier.weight.dtype)
+    first = model.classifier[0]
+    last_idx = flatten_channel_indices(input_idx, 25).to(first.weight.device)
+    channel_indices["classifier.0.input"] = last_idx.detach().cpu()
+    parameter_slices["classifier.0.weight"] = ((1, last_idx),)
+    parameter_slices["classifier.0.bias"] = ()
+    compact.classifier = copy.deepcopy(model.classifier)
+    linear = nn.Linear(last_idx.numel(), first.out_features, bias=True).to(first.weight.device, first.weight.dtype)
     with torch.no_grad():
-        linear.weight.copy_(model.classifier.weight.index_select(1, last_idx))
-        if model.classifier.bias is not None:
-            linear.bias.copy_(model.classifier.bias)
-    compact.classifier = linear
+        linear.weight.copy_(first.weight.index_select(1, last_idx))
+        linear.bias.copy_(first.bias)
+    compact.classifier[0] = linear
     if return_parameter_slices:
         return compact, parameter_slices, channel_indices
     return compact
+
+def flatten_channel_indices(indices, spatial_size=25):
+    return (indices[:, None] * spatial_size + torch.arange(spatial_size, device=indices.device)).flatten()

@@ -1,0 +1,33 @@
+stage=ts_compaction strategy=train_time_compaction ts=12 mode=posthoc
+epoch=1/30 phase=dense train_loss=0.322296 val_accuracy=0.973500 lr=1 train_s=8.6277 validation_s=0.5949 parameters=61728
+epoch=2/30 phase=dense train_loss=0.059478 val_accuracy=0.985833 lr=1 train_s=8.4814 validation_s=0.6079 parameters=61728
+epoch=3/30 phase=dense train_loss=0.040890 val_accuracy=0.987833 lr=1 train_s=8.7174 validation_s=0.5980 parameters=61728
+epoch=4/30 phase=dense train_loss=0.033391 val_accuracy=0.983000 lr=1 train_s=8.5763 validation_s=0.6079 parameters=61728
+epoch=5/30 phase=dense train_loss=0.027317 val_accuracy=0.987167 lr=1 train_s=8.5571 validation_s=0.5751 parameters=61728
+epoch=6/30 phase=dense train_loss=0.022852 val_accuracy=0.988167 lr=1 train_s=7.9502 validation_s=0.5425 parameters=61728
+epoch=7/30 phase=dense train_loss=0.019542 val_accuracy=0.985833 lr=1 train_s=7.8468 validation_s=0.5797 parameters=61728
+epoch=8/30 phase=dense train_loss=0.017579 val_accuracy=0.985333 lr=1 train_s=7.8508 validation_s=0.5470 parameters=61728
+epoch=9/30 phase=dense train_loss=0.015839 val_accuracy=0.990833 lr=1 train_s=7.9349 validation_s=0.5395 parameters=61728
+epoch=10/30 phase=dense train_loss=0.013722 val_accuracy=0.989167 lr=1 train_s=7.9133 validation_s=0.5744 parameters=61728
+epoch=11/30 phase=dense train_loss=0.012540 val_accuracy=0.988833 lr=1 train_s=8.3451 validation_s=0.5915 parameters=61728
+epoch=12/30 phase=dense train_loss=0.010688 val_accuracy=0.987000 lr=1 train_s=8.5105 validation_s=0.6233 parameters=61728
+transition_after_epoch=12 first_compact_epoch=13 strategy=train_time_compaction channel_sparsity=0.54545455 mask_source_run_id=20261120T153121276160_baseline_seed1 mask_sha256=cbadb79d243baa930d74f7e501e2caf63e2c2b7b12d93ee54654247ae9098bd6 parameters_before=61728 projected_parameters_after=35604 actual_parameters_after=35604 flops_before=833040.0 projected_flops_after=228240.0
+epoch=13/30 phase=compact train_loss=0.078210 val_accuracy=0.975167 lr=1 train_s=8.3714 validation_s=0.6125 parameters=35604
+epoch=14/30 phase=compact train_loss=0.041682 val_accuracy=0.984333 lr=1 train_s=8.3709 validation_s=0.5849 parameters=35604
+epoch=15/30 phase=compact train_loss=0.034519 val_accuracy=0.984167 lr=1 train_s=8.3635 validation_s=0.5821 parameters=35604
+epoch=16/30 phase=compact train_loss=0.029388 val_accuracy=0.984167 lr=1 train_s=8.2979 validation_s=0.5936 parameters=35604
+epoch=17/30 phase=compact train_loss=0.026801 val_accuracy=0.984167 lr=1 train_s=8.3282 validation_s=0.6184 parameters=35604
+epoch=18/30 phase=compact train_loss=0.023943 val_accuracy=0.982500 lr=1 train_s=8.4043 validation_s=0.6078 parameters=35604
+epoch=19/30 phase=compact train_loss=0.020926 val_accuracy=0.984333 lr=1 train_s=8.4594 validation_s=0.5878 parameters=35604
+epoch=20/30 phase=compact train_loss=0.019426 val_accuracy=0.985000 lr=1 train_s=8.3390 validation_s=0.5949 parameters=35604
+epoch=21/30 phase=compact train_loss=0.018043 val_accuracy=0.985833 lr=1 train_s=8.4625 validation_s=0.5965 parameters=35604
+epoch=22/30 phase=compact train_loss=0.017010 val_accuracy=0.986167 lr=1 train_s=8.4847 validation_s=0.5899 parameters=35604
+epoch=23/30 phase=compact train_loss=0.016402 val_accuracy=0.987667 lr=1 train_s=8.3128 validation_s=0.5899 parameters=35604
+epoch=24/30 phase=compact train_loss=0.014939 val_accuracy=0.987000 lr=1 train_s=8.2580 validation_s=0.5988 parameters=35604
+epoch=25/30 phase=compact train_loss=0.014215 val_accuracy=0.987167 lr=1 train_s=8.3984 validation_s=0.6164 parameters=35604
+epoch=26/30 phase=compact train_loss=0.013284 val_accuracy=0.984667 lr=1 train_s=8.4253 validation_s=0.5848 parameters=35604
+epoch=27/30 phase=compact train_loss=0.012166 val_accuracy=0.984500 lr=1 train_s=8.4223 validation_s=0.5945 parameters=35604
+epoch=28/30 phase=compact train_loss=0.011813 val_accuracy=0.985000 lr=1 train_s=8.4763 validation_s=0.6048 parameters=35604
+epoch=29/30 phase=compact train_loss=0.011783 val_accuracy=0.987667 lr=1 train_s=8.3296 validation_s=0.5952 parameters=35604
+epoch=30/30 phase=compact train_loss=0.011711 val_accuracy=0.986000 lr=1 train_s=8.4298 validation_s=0.5964 parameters=35604
+paired_mask_match=True

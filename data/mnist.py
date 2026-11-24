@@ -5,9 +5,9 @@ from torchvision import datasets, transforms
 
 def create_loaders(root="data", batch_size=64, seed=1, num_workers=0):
     datasets.MNIST.mirrors = ["https://ossci-datasets.s3.amazonaws.com/mnist/"]
-    normalize = transforms.Normalize((0.1307), (0.3081))
+    normalize = transforms.Normalize((0.1307,), (0.3081,))
     train_transform = transforms.Compose([transforms.Pad(2), transforms.ToTensor(),normalize])
-    eval_transform = ([transforms.ToTensor(), normalize])
+    eval_transform = transforms.Compose([transforms.Pad(2), transforms.ToTensor(), normalize])
     training = datasets.MNIST(root, train=True, download=True, transform=train_transform)
     validation_base = datasets.MNIST(root, train=True, download=True, transform=eval_transform)
     generator = torch.Generator().manual_seed(seed)
